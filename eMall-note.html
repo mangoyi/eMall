@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+<script>
+
+
+/*
+
+// main.js 中
+
+new Vue({      // 可以通过el的方式配置vue监听的区域
+  el: '#app',
+  router,
+  components: { App },
+  template: '<App/>'
+})
+
+new Vue({      // 也可以通过$mount()的方式挂载到区域
+  router,
+  components: { App },
+  template: '<App/>'
+}).$mount("#app")
+
+
+组件是可以被多个页面进行复用.
+
+在文件目录中，static文件夹和src中assets文件夹有什么区别呢？
+   1. static文件和assets都是用来存放静态资源
+   2. assets更加偏向于组件的资源，比如hello,head组件中的图片资源。 如果是页面中要加载的图片则存放在static文件中，页面中比较大的图片以src属性值的形式放入到文件中
+
+在es6中import导入的一个不同点：
+   1. js文件的导入： import Goods from "./../good.vue"
+   2. css文件的导入： import './../assets/css/base.css'
+
+在写路径的时候可以使用@来代替src的路径，因为webpack.base.conf.js中@就是src的别名，代替了src
+
+ 新建第一个组件： components/NavHeader.vue      => header组件
+    第二个组件： components/NavFooter.vue      => footer组件
+    第三个组件： components/NavBread.vue       => 面包屑组件
+
+ ./ 表示当前目录
+ ../ 表示上一级目录
+
+
+    NavHeader:NavHeader  对于NavHeader这样的组件，在引入的时候不能使用大写，所以一定要写nav-header形式.即是 <nav-header></nav-header>
+
+
+  <slot name="bread"></slot>      // slot是一个插槽,需要添加name属性，然后便可以将内容放入到插槽。会根据name属性去寻找放入的插槽
+
+  使用的时候：  <span slot="bread">面包</span>。  面包 就会插入到slot标签中。
+  当然如果一个组件的位置只是一个插槽那么可以不需要使用name属性。 比如<slot></slot>  <span>面包</span>
+
+  -------------------------------------
+
+  数据列表数据渲染实现：
+
+      模拟mock数据，加载商品列表信息。 主要是前端开发者在开发完程序之后，可以自定义一些模拟的json数据去验证代码的有效性和合法性。
+      而不用过度去依赖后台接口，这样可以对程序完成自我测试。所以需要定义数据接口
+
+
+*/
+
+
+
+</script>
+</body>
+</html>
