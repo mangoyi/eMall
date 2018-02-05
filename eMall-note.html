@@ -61,6 +61,47 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
       模拟mock数据，加载商品列表信息。 主要是前端开发者在开发完程序之后，可以自定义一些模拟的json数据去验证代码的有效性和合法性。
       而不用过度去依赖后台接口，这样可以对程序完成自我测试。所以需要定义数据接口
 
+  按照接口定义来确定的接口类型，前后端统一接口协同开发。JSON数据中一定要非常注意不能添加多余句号，并且在json数据中不能添加注释。
+
+  怎么在前端加载这些数据呢？
+
+  为什么vue可以直接访问localhost，是因为vue客户端内置了一套express框架。是基于nodejs提供一套服务，然后会开启一个端口去访问到静态资源。具体代码在dev-server.js中，
+
+  在新版本的Vue开发中，通过vue-cli创建的build文件夹下面已经没有了旧版本中的dev-server.js文件，那么如果我么需要将旧项目升级需要添加一些路由设置该怎么办呢?
+
+  新版本的vue已将dev-server.js与webpack.dev.conf.js合并，若要写路由相关配置需要找到webpack.dev.conf.js中的devServer对象进行相关配置
+  所以在mock数据的时候可以参见http://blog.csdn.net/qq_34645412/article/details/78833860
+
+
+  export default {
+    data() {         // 在组件中的data必须是一个函数，里面去返回一个object。vue官方不允许组件之间状态共享，每个组件都是独立的，所以data必须是一个函数，return一个object，所以不管什么组件加载了这个组件，它的状态都是独立的
+      return {
+        msg: 'goods list'
+      }
+    },
+    components: {
+      NavHeader:NavHeader,
+      NavFooter:NavFooter,
+      NavBread:NavBread
+    },
+    mounted: function() {
+
+    }
+}
+
+  6-2mock数据有点问题!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  在0-100， 100-500 这个分层区间的时候，我们应该通过v-bind:class指令来动态的绑定class.
+
+  实现图片懒加载？   可以参见https://www.npmjs.com/package/vue-lazyload
+    在npmjs.com包中搜索vue-lazyload插件，使用命令 cnpm install vue-lazyload --save
+    1.在main.js导入vue-lazyload插件， import VueLazyLoad from 'vue-lazyload'
+    2.通过 Vue.use(VueLazyLoad,{
+          loading: "/static/loading-svg/loading-bars.svg"
+        })
+    3. 将插件放在图片中进行显示将
+       <a href="#"><img v-bind:src="'/static/'+item.productImg" alt=""></a>    中的v-bind:src修改为
+       <a href="#"><img v-lazy="'/static/'+item.productImg" alt=""></a>
 
 */
 
