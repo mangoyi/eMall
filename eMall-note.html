@@ -65,11 +65,11 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
 
   怎么在前端加载这些数据呢？
 
-  为什么vue可以直接访问localhost，是因为vue客户端内置了一套express框架。是基于nodejs提供一套服务，然后会开启一个端口去访问到静态资源。具体代码在dev-server.js中，
+  为什么vue可以直接访问localhost，是因为vue客户端内置了一套express框架。是基于nodejs提供一套服务，然后会开启一个端口去访问到静态资源。具体代码在dev-demo-server.js中，
 
-  在新版本的Vue开发中，通过vue-cli创建的build文件夹下面已经没有了旧版本中的dev-server.js文件，那么如果我么需要将旧项目升级需要添加一些路由设置该怎么办呢?
+  在新版本的Vue开发中，通过vue-cli创建的build文件夹下面已经没有了旧版本中的dev-demo-server.js文件，那么如果我么需要将旧项目升级需要添加一些路由设置该怎么办呢?
 
-  新版本的vue已将dev-server.js与webpack.dev.conf.js合并，若要写路由相关配置需要找到webpack.dev.conf.js中的devServer对象进行相关配置
+  新版本的vue已将dev-demo-server.js与webpack.dev.conf.js合并，若要写路由相关配置需要找到webpack.dev.conf.js中的devServer对象进行相关配置
   所以在mock数据的时候可以参见http://blog.csdn.net/qq_34645412/article/details/78833860
 
 
@@ -106,7 +106,7 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
    7-1的视频内容暂时都没有去看，在linux系统下面安装node环境。
 
 
-    nodejs
+    nodejsse'r
 
     1. 基于Chrome V8引擎，可以构建可扩展高性能的服务器，在处理高并发是相当有优势的，同时和c语言在性能上面不相上下
 
@@ -126,7 +126,7 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
 
       4. httpm模块客户端演示
 
-    node演示后端的文件存放在server文件中
+    node演示后端的文件存放在demo-server文件中
 
     通过node加载静态页面,主要是通过node中的fs模块。通过fs文件系统去访问这个静态页面。
 
@@ -134,7 +134,39 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
      1. nodejs提供一种服务，被调用。此时称为服务端。
      2. 有时候很多底层的服务是由其它的底层写出来的，这个时候就要通过nodejs来调用底层第三方库(这个时候nodejs相对于底层那就是一个客户端调用服务)
 
-      很多时候调用第三方服务是必须的，一般公司都会有底层的调用团队来暴露这样的接口，将数据暴露给前端
+      很多时候调用第三方服务是必须的，一般公司都会有底层的调用团队来暴露这样的接口，将数据暴露给前端.
+
+     搭建基于express框架运行环境， 更快的搭建服务：
+
+        1. 安装express generator 生成器
+        2. 通过生成器自动创建项目
+        3. 配置分析
+
+       命令的顺序：(文件目录在eMall)
+        1. cnpm install -g express-generator   // 安装全局express框架
+        2. express server                      // 安装server文件夹
+           便在eMall文件夹下生成了server文件夹：
+                 bin: 可执行文件，通过node来启动www文件就可以启动后台的服务
+                 public: 静态资源
+                 routes：服务器端路由： 主要就是浏览器访问的地址
+                 views: 就是使用到的视图,express框架官方推荐使用jade
+                    layout.jade 公共的模板
+                    index.jade 可以继承layout.jade模板，通过jade语法，来输出，但是可读性比较差
+                 app.js：是服务的入口
+                 package.json： 服务端项目依赖
+
+        3. 在server文件下： cnpm install 安装服务端的依赖
+        4. node bin/www    启动一个服务
+
+        在使用模板语言的时候： 可以使用jade语法(默认的是jade模板)，当然也可以使用html语言
+          如何修改为html语言？
+          1. 在server文件下： cnpm install ejs --save  (先安装ejs文件)
+          2. 将views中的.jade文件全部删除
+          3. 在app.js中，var ejs = require('ejs')
+             在view engine setup下面： app.engine('.html', ejs__express)
+                                      app.set('view engine', 'html')
+          4. 在views中创建一个页面: index.html
+          4. 启动服务：node bin/www
 
 </script>
 </body>
