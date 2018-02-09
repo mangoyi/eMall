@@ -96,8 +96,8 @@
         },
         methods: {
           getGoodsList() {
-            axios.get("/api/goods").then((result) => {
-              var res = result.data.data;
+            axios.get("/goods/list").then((result) => {
+              var res = result.data;
               console.log(res)
               this.goodsList = res.result;
             })
