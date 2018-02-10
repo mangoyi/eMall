@@ -90,6 +90,21 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
 }
 
   6-2 mock数据
+    webpack.dev.conf.js中后端服务路由如下
+    const goodsData = require('./../mock/goods.json')
+    devserver中配置defore方法:
+     before: function (app) {
+      app.get('/goods/list', (req, res, next) => {
+        res.json(goodsData)
+      })
+    }
+    前端获取的数据方式：
+    axios.get("/goods/list").then((result) => {
+            var res = result.data;
+            console.log(res)
+            this.goodsList = res.result;
+          })
+
 
   在0-100， 100-500 这个分层区间的时候，我们应该通过v-bind:class指令来动态的绑定class.
 
@@ -184,8 +199,151 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
         2. 添加db存储和日志存储文件夹
         3. 添加服务、配置环境变量、启动Mongo
 
+         作为开发者一般会选择用 community Server 这个版本来作为开发的mongodb版本：Current Stable Release（当前稳定的版本）
+         如果项目要上线的话都是要搭建在linux系统上。
+
+         关于window系统安装运行mongodb的文章： http://www.imooc.com/article/18438
+
+         MongoVue mongodb的客户端！  MongoHub是Mac的版本客户端！
+
+         在d盘创建MongoDB文件夹： 用于连接mongodb中数据的存储位置。
+            在MongoDB文件夹中包括如下文件：(按照习惯我们都会使用下面三个名字)
+                 1.data ： 数据库中的信息都存放在data文件夹中
+                 2.logs :
+                 3.etc  : 数据库的配置信息
+                       mongo.conf（配置文件）
+        1.cmd中启用服务：    mongod --dbpath F:\MongoDB\data
+        2.另开一个cmd：     mongo                                   // show dbs
+
+        1.  show dbs        // show数据库
+        2.  use imoocmall   // 创建并切换到imoocmall数据库
+        3.  db.goods.insert({id: 101,"name":"mi6", "salePrice": 2499})
+
+        8-1和8-3在数据库界面mongovue存在bug
+
+        MongoDB基本语法：
+
+        数据库对比－－－－－－－－－－－－－－－－－－
+
+        ＳＱＬ(关系型数据库)   MongoDB（非关系型数据库）       解释
+
+        database            database                     数据库
+        table               collection                  数据库表/集合
+        row                 document                    数据记录行/文档
+        column              field                       数据字段/域
+        index               index                       索引
+        table joins         /                           表连接，mongodb不支持
+        primary key         primary key                 主键，mongodb自动将_id字段设置为主键
+
+        最基本的用法： 增删改查
+
+          插入文档   更新文档   删除文档   查询文档
+
+        show dbs  查看所有数据库集合
+        use  demo 创建demo数据库并且切换到demo    (但是如果没有插入数据那么使用show dbs 是查看不到的)
+        db.users.insert({id: 123, name: "mangoyi"})  想users的collection中添加数据
+        show colletions
+           system.indexes
+           users
+        db.dropDatabase()                      //  删除demo这个collection集合
+        // db.demo.drop()                     也可以直接删除demo集合
 
 
+        2.
+        在user-collection中插一条数据
+          db.user.insert({userId: 101, userName: 'jack', userAge: 28, class:{name: 'imooc',num: 10}})
+        使用命令查看数据具体内容
+          db.user.find().pretty()         // find() 查看所有数据   pretty() 将数据格式化
+        查看第一条数据
+          db.user.findOne()
+          db.user.find({userName: 'jack'})
+
+        更新数据：
+          db.user.update({userName: 'jack'}, {$set: {userAge: 30}})    // 将userName:"jack"的数据中的userAge更新为30
+
+          db.user.update({userName: 'jack'}, {$set: {'class.name': 'jindong'}})   // 更新子文档，必须按照对象.的形式来写
+
+        根据条件查询：
+          db.user.find({userAge: {$gt: 26}})         // userAge > 26
+          db.user.find({userAge: {$gte: 26}})         // userAge >= 26
+
+          db.user.find({userAge: {$lt: 26}})         // userAge < 26
+          db.user.find({userAge: {$lte: 26}})         // userAge <= 26
+
+          db.user.find({userAge: {$eq: 26}})         // userAge = 26
+
+        删除：
+          db.user.remove({userId: 101})
+
+
+        eMall项目的表的设计：Goods和Users这两个collection
+
+         db如下：(如果通过mysql等sql型的数据库需要至少设计五张表格,最后通过userId来实现表之前的关联进行查询)
+
+            Goods: {
+              "productId": String,
+              "productName": String,
+              "salePrice": Number,
+              "checked": String,
+              "productNum": Number,
+              "productImage": String
+           }
+           Users: {
+              "userId": String,
+              "userName": String,
+              "userPwd": String,
+              "orderList": Array,
+              "cartList": [
+                {
+                  "productId": String,
+                  "productName": String,
+                  "salePrice": String,
+                  "productImage": String,
+                  "checked": String,
+                  "productNum": String
+                }
+              ],
+              "addressList": [
+                {
+                  "addressId": String,
+                  "userName": String,
+                  "streetName": String,
+                  "postCode": Number,
+                  "tel" : Number,
+                  "isDefault": Boolean
+                }
+              ]
+           }
+
+
+         --------------------------将eMall项目中使用到的数据插入到mongodb数据库中
+         方式一手动插入数据:
+         use db_demo
+         db.goods.insert({"productId": "10001", "productName": "aaa", "salePrice": 249, "productImage": "1.jpg"})
+
+         方式二客户端方式进行链接：
+
+            在mongovue中直接将数据库文件，导入。(import file == 选择需要导入的数据库文件)
+
+         方式三 直接通过命令终端来进行链接：(备注： 此时要重新打开一个命令行，不能再mongo启动下去操作)
+
+             mongoimport -d db_demo -c users --file F:\vue-all\eMall\dbs\dumall-users
+               // -d db_demo 表示db_demo数据库    -c users表  --file F:\vue-all\eMall\dbs\dumall-users 表示导入文件的地址
+
+
+        9-1 Node的启动和调试方式。
+
+          作为开发，一定需要知道bug出现之后的调试方式。
+          nodejs启动的三种方式：
+            1. 通过node命令启动
+            2. webstorm配置启动入口（前端IDE）
+            3. pm2  => 基于进程管理
+
+
+
+
+
+*/
 </script>
 </body>
 </html>
