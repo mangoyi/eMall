@@ -219,6 +219,8 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
         2.  use imoocmall   // 创建并切换到imoocmall数据库
         3.  db.goods.insert({id: 101,"name":"mi6", "salePrice": 2499})
 
+        启用数据库服务：   mongod -f F:\MongoDB\etc\mongo.conf
+
         8-1和8-3在数据库界面mongovue存在bug
 
         MongoDB基本语法：
@@ -241,7 +243,7 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
 
         show dbs  查看所有数据库集合
         use  demo 创建demo数据库并且切换到demo    (但是如果没有插入数据那么使用show dbs 是查看不到的)
-        db.users.insert({id: 123, name: "mangoyi"})  想users的collection中添加数据
+        db.users.insert({id: 123, name: "mangoyi"})  向users的collection中添加数据
         show colletions
            system.indexes
            users
@@ -325,7 +327,7 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
 
             在mongovue中直接将数据库文件，导入。(import file == 选择需要导入的数据库文件)
 
-         方式三 直接通过命令终端来进行链接：(备注： 此时要重新打开一个命令行，不能再mongo启动下去操作)
+         方式三 直接通过命令终端来进行链接：(备注： 此时要重新打开一个命令行，不能再mongo下操作)
 
              mongoimport -d db_demo -c users --file F:\vue-all\eMall\dbs\dumall-users
                // -d db_demo 表示db_demo数据库    -c users表  --file F:\vue-all\eMall\dbs\dumall-users 表示导入文件的地址
@@ -334,14 +336,40 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
         9-1 Node的启动和调试方式。
 
           作为开发，一定需要知道bug出现之后的调试方式。
-          nodejs启动的三种方式：
+          nodejs启动后端服务的三种方式：
             1. 通过node命令启动
             2. webstorm配置启动入口（前端IDE）
-            3. pm2  => 基于进程管理
+            3. pm2  => 基于进程管理，可以基于当前电脑的负载均衡
+
+        1. server后端文件是通过express框架搭建而成，执行bin/www 文件便可以启动服务。
+
+            node server/bin/www    =>  打开浏览器输入地址127.0.0.1:3000 便可以访问到页面，表示服务正常启用
+
+        在server后端项目文件中app.js主要配置的是一级路由，而二级路由的配置在routes文件夹中。
+
+        2. 使用webstorm来配置启动服务：
+            1. Run 选择 Edit Configurations
+            2. 点击 + 选择nodejs
+            3. 设置name和javascript file(需要启用的javascript文件)
+
+        3. 通过pm2来启动：
+            1. cnpm install pm2 -g  // 第一步先全局安装pm2插件
+            2. pm2 start server/bin/www   // 此时要在eMall
+
+            备注: 在使用node server/bin/www 启动服务之后，就不能在进行其他命令操作了。
+                  但是在使用pm2 start server/bin/www 启动的时候，依然可以进行其他命令的操作
 
 
+        9-2 基于Express开发商品列表查询接口：
 
+            cnpm install mongoose --save                // 安装到依赖
 
+            1： 安装Mongoose   => Mongoose是对mongodb的封装
+            2   创建model     => 通过model创建实体和mongodb进行关联
+            3   创建路由      =>  通过路由去调用model实体
+            4   基友mongoose, 实现商品列表的查询功能
+
+        在server文件夹创建goods.js文件，去建立model层。然后在routes中goods.js路由
 
 */
 </script>
