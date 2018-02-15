@@ -390,6 +390,19 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
         本地项目启动的步骤：　1. 启动mongodb服务： mongod --dbpath F:\MongoDB\data
                            2. 启动后端服务：    node server/bin/www
                            3. 启动前端vue项目:  npm run dev
+
+        商品排序： 主要是通过前端传递1表示升序，-1表示降序。在数据库层面实现的升序和降序，通过mongoose提供的api
+
+        在商品分页中： 使用vue-infinite-scroll插件，当滚动条滑动的时候会自动去加载数据。
+              安装vue-infinite-scroll插件： npm install vue-infinite-scroll --save
+
+              1. 在main.js中导入这样的插件： import infiniteScroll from "vue-infinite-scroll"
+              2. 通过： Vue.use(infiniteScroll)         // 来使用插件
+              3. 在需用使用插件的位置添加这样一个包裹div:
+                  <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+                    ...
+                  </div>
+                  // loadMore就是当鼠标滚动的时候将会调用的方法，
 */
 </script>
 </body>
