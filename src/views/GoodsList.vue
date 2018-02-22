@@ -47,7 +47,7 @@
                 </li>
               </ul>
               <div class="load-more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="30">
-                加载中...
+                <img src="./../assets/loading-spinning-bubbles.svg" alt="false" v-show="loading">
               </div>
             </div>
           </div>
@@ -77,6 +77,7 @@
             page: 1,
             pageSize: 8,
             busy: true,
+            loading: false,
             priceFilter:[
               {
                 startPrice: '0.00',
@@ -117,10 +118,13 @@
               priceLevel: this.priceChecked
             };
 
+            this.loading = true;              // 接口请求前打开loading
+
             axios.get("/goods", {
               params: param                           // url中传递的参数  http://localhost:8080/goods?page=1&pageSize=8&sort=-1
             }).then((responce) => {
               let res = responce.data;
+              this.loading = false;           // 接口请求后关闭loading
               if (res.status == 0){
                 if (flag) {
                   this.goodsList = this.goodsList.concat(res.result.list);                             // flag == true表示分页
