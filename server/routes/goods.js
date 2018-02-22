@@ -34,7 +34,28 @@ router.get("/",function (req, res, next) {     // 当访问 "/" 的时候就默�
 
   let sort = req.param("sort");  // 接收前端传过来的字段
 
+  let priceLevel = req.param("priceLevel");
+
+  var priceGt = '', priceLte = '';
+
   let params = {};
+
+  if (priceLevel != 'all') {
+    switch (priceLevel) {
+      case '0': priceGt = 0;priceLte = 100;break;
+      case '1':priceGt = 100;priceLte = 500;break;
+      case '2':priceGt = 500;priceLte = 1000;break;
+      case '3':priceGt = 1000;priceLte = 5000;break;
+    }
+
+    params = {
+      salePrice: {
+        $gt: priceGt,
+        $lte: priceLte
+      }
+    }
+  }
+
   let goodsModel = Goods.find(params).skip(skip).limit(pageSize);   // 括号内的skip表示默认跳过skip条数据. limit表示一页pageSize条数据
                                                                     // 所以skip()和limit()之间的配合，skip=1表明是第一页，那么其实一条数据都不跳过
                                                                     // 此时pageSize的条数为固定的，比如最多是8条。
