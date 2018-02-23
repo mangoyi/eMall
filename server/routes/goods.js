@@ -22,7 +22,7 @@ mongoose.connection.on("disconnected", function () {
   console.log("MongoDB connected disconnected")
 });
 
-// 实现路由
+// 查询商品列表数据
 router.get("/",function (req, res, next) {     // 当访问 "/" 的时候就默认访问到goods信息
   // res.send("hello good list......");
   console.log(req);
@@ -83,6 +83,88 @@ router.get("/",function (req, res, next) {     // 当访问 "/" 的时候就默�
   })
 
 });
+
+// 加入购物车功能(一般向服务器提交数据使用post)
+router.post("/addCart", function(req, res, next) {
+
+  // 假设用户已经登陆
+  var userId = '100000077', productId = req.body.productId;
+
+  // 获取模型
+  var User = require('../models/user');
+
+  User.findOne({userId: userId}, function (err, userDoc) {     // 第一个是查询的条件，第二个是一个回调
+    if (err) {
+        res.json({
+          status: '1',
+          msg: err.message
+        })
+    } else { // 表明已经取到用户信息了
+      console.log(userDoc);
+      if (userDoc) {
+        let goodsItem = '';
+        userDoc.cartList.forEach(function (item) {
+          if (item.productId == productId) {         // 说明购物车中已经有这个数据了
+            goodsItem = item;
+            item.productNum++;            // 相同的商品直接对商品数量进行++
+          }
+        });
+
+        if (goodsItem) {   // 表示购物车已经有这个商品了
+          userDoc.save(function(err2, doc2) {
+            if (err2) {
+              res.json({
+                status: '1',
+                msg: err2.message
+              })
+            } else {
+              res.json({
+                status: '0',
+                msg: '',
+                result: 'success'            // 添加成功
+              })
+            }
+          });
+        } else {
+          Goods.findOne({productId: productId}, function (err1, doc) {  // 查询其中的一件商品
+            if (err1) {
+              res.json({
+                status: "1",
+                msg: err1.message
+              })
+            } else {            // 如果这件商品存在
+              if (doc) {
+                doc.productNum = 1;         // 默认商品是一件
+                doc.checked = 1;           // 表示选中的状态
+
+                userDoc.cartList.push(doc);  // 将查到的商品加入到用户的购物车中
+                userDoc.save(function(err2, doc2) {
+                  if (err2) {
+                    res.json({
+                      status: '1',
+                      msg: err2.message
+                    })
+                  } else {
+                    res.json({
+                      status: '0',
+                      msg: '',
+                      result: 'success'            // 添加成功
+                    })
+                  }
+                });
+              }
+            }
+          });
+        }
+
+      }
+    }
+  });
+
+
+});
+
+
 
 // 将路由输出
 module.exports = router;

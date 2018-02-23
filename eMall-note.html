@@ -409,7 +409,16 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
 
         实现loading图标加载:
               在GoodsList.vue文件中使用img标签，src的值改为loading-spinning-bubbles的引入地址.
-              并且在data中去使用loading默认是false不显示
+              并且在data中去使用loading默认是false不显示。
+
+        实现加入购物车模型：
+           1. 在server/models/新建user.js用户模型，
+           2. 然后就在server/routes/中实现user添加购物车的功能，在goods.js中增加功能
+
+                 前端传商品id给后台，通过id将商品数据信息插入用户users集合的cartList子文档中，cartList就是购物车的商品子文档。
+                 注意： 当添加相同的商品的时候，需要去判断。如果是添加相同商品的时候，是对商品数量进行++，而不是再插入一个商品。
+
+           备注： 404请求的文件不存在, 后端路由可能配置出错
 */
 </script>
 </body>
