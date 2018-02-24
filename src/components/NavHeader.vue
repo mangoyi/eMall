@@ -84,7 +84,18 @@
                 nickName: ''
             }
         },
+        mounted() {                    // 生命周期的初始化函数
+            this.checkLogin();
+        },
         methods: {
+            checkLogin() {
+                axios.get("/users/checkLogin").then((response) => {
+                    let res = response.data;
+                    if(res.status == '0') { // 已经登陆
+                        this.nickName = res.result;
+                    }
+                });
+            },
             login () {
 
                 if (!this.userName || !this.userPwd) {    // 输入框为空的校验

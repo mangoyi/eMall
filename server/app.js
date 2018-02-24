@@ -25,6 +25,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 全局拦截
+app.use(function (req, res, next) {
+
+    // 存cookie是通过res来存，取cookie是通过req来获取
+    if (req.cookies.userId) {        // 表示已经登陆了
+        next();                      // 不需要任何操作，继续往后执行
+    } else {
+
+        if (req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || req.path == '/goods/list')  {  // 登陆或则退出登录都不去拦截,(表示匹配的查询商品url)查看商品的时候也不去拦截
+            next();                                                                    // req.path == '/goods/list'  可以使用 req.originalUrl.indexOf("/goods/list") > -1 ) 来表示查看商品
+        } else {
+            res.json({
+                status: '10001',
+                msg: '当前未登录',
+                result: ''
+            })
+        }
+
+    }
+
+});
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/goods', goods);

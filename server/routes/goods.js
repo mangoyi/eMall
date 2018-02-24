@@ -23,7 +23,7 @@ mongoose.connection.on("disconnected", function () {
 });
 
 // 查询商品列表数据
-router.get("/",function (req, res, next) {     // 当访问 "/" 的时候就默认访问到goods信息
+router.get("/list",function (req, res, next) {     // 当访问 "/" 的时候就默认访问到goods信息
   // res.send("hello good list......");
   console.log(req);
 

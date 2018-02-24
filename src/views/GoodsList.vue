@@ -120,7 +120,7 @@
 
             this.loading = true;              // 接口请求前打开loading
 
-            axios.get("/goods", {
+            axios.get("/goods/list", {
               params: param                           // url中传递的参数  http://localhost:8080/goods?page=1&pageSize=8&sort=-1
             }).then((responce) => {
               let res = responce.data;

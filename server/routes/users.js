@@ -35,6 +35,11 @@ router.post('/login', function(req, res, next) {    // 登陆的路由
                     maxAge: 1000*60*60   // 存储的时间是一个小时
                 });
 
+                res.cookie('userName', doc.userName, {
+                    path: '/',
+                    maxAge: 1000*60*60
+                });
+
                 res.json({
                     status: '0',
                     msg: '',
@@ -65,6 +70,23 @@ router.post("/logout", function (req, res, next) {   // req 请求  res 响应 n
         result: ''
     })
 
+});
+
+// 登陆拦截
+router.get("/checkLogin", function (req, res, next) {
+   if (req.cookies.userId) {   // 判断是否存在userId这个cookie
+       res.json({
+           status: '0',
+           msg: '',
+           result: req.cookies.userName || ''
+       })
+   } else {  // 表示当前未登录
+       res.json({
+           status: '1',
+           msg: '当前未登录',
+           result: ''
+       })
+   }
 });
 
 module.exports = router;
