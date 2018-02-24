@@ -29,7 +29,7 @@
             <div class="nav-cart">
                 <span v-text="nickName" v-if="nickName"></span>
                 <a href="javascript:void(0)" @click="loginModalFlag=true" v-if="!nickName">Login</a>
-                <a href="javascript:void(0)" @click="loginModalFlag=true" v-if="nickName">Log Out</a>
+                <a href="javascript:void(0)" @click="logOut" v-if="nickName">Log Out</a>
 
                 <a href="javascript:void(0)">
                     <svg class="navbar-cart-logo">
@@ -104,6 +104,15 @@
                         this.nickName = res.result.userName;
                     } else {
                         this.errorTip = true;
+                    }
+                })
+            },
+
+            logOut() {
+                axios.post("/users/logout").then((response) => {
+                    let res = response.data;
+                    if (res.status == '0') { // 表示 退出成功
+                         this.nickName = '';
                     }
                 })
             }

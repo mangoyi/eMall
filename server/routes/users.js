@@ -50,4 +50,21 @@ router.post('/login', function(req, res, next) {    // 登陆的路由
 
 });
 
+// 退出登录接口
+router.post("/logout", function (req, res, next) {   // req 请求  res 响应 next 表示继续往下一步执行
+
+    // 清cookie
+    res.cookie("userId", "", {
+        path: "/",
+        maxAge: -1
+    });
+
+    res.json({
+        status: "0",
+        msg: '',
+        result: ''
+    })
+
+});
+
 module.exports = router;
