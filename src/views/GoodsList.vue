@@ -1,4 +1,4 @@
-<template xmlns:v-lazy="http://www.w3.org/1999/xhtml">
+<template>
   <div>
     <nav-header></nav-header>
     <nav-bread>

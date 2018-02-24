@@ -419,6 +419,35 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
                  注意： 当添加相同的商品的时候，需要去判断。如果是添加相同商品的时候，是对商品数量进行++，而不是再插入一个商品。
 
            备注： 404请求的文件不存在, 后端路由可能配置出错
+
+        登陆功能的实现：
+            1. 前端：NavHeader.vue               备注： v-show 和 v-if 之间的区别
+            2. 后端： server/routes/users.js
+                  在设置cookie时，可以使用中间件cookie-parser，是专门用来对cookie进行处理，对cookie进行存取
+
+            在写后端登陆路由的时候，需要对config中的index.js中
+                    proxyTable: {
+                      '/goods': {
+                          target: 'http://localhost:3000'
+                      },
+                      '/goods/*': {
+                          target: 'http://localhost:3000'
+                      },
+                      '/users/*': {
+                          target: 'http://localhost:3000'
+                      }
+                    },
+
+                    进行配置，'/users/*'  *表示通配符，无论访问的子路由是什么，都可以代理到这个位置。
+                    如果没有这个代理，那么请求就是跨域，请求的地址不一样是没办法拿到数据的。
+
+
+          chrome浏览器在调试的时候： chrome://net-internals
+                    Net Internals 是一套工具集合，用于帮助诊断网络请求与訪问方面的问题，它通过监听和搜集 DNS。Sockets。SPDY，Caches 等事件与数据来向开发人员反馈各种网络请求的过程、状态以及可能产生影响的因素。
+
+
+
+
 */
 </script>
 </body>
