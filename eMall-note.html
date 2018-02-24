@@ -456,7 +456,22 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
            1. 实现的效果就是当用户已经登陆，名称是admin。 在刷新页面的时候依然保存这个admin
            2. 当已经登陆之后，会在cookie中存储，然后刷新页面，admin名称依然会展示出来
 
+        全局模态框组件： 重点的内容是去实现父子间的通信, 父子组件之间的数据是如何进行传递的。
+           在components文件下创建Modal.vue组件，用来作为全局模态框组件。
 
+           父子通信最基本的原则： 父组件可以传递属性到子组件，但是子组件不能随便去改变这个状态，不能去修改父组件的状态值.
+
+           父子通信需要通过$emit来触发，
+                   1. 在父组件（GoodsList）上自定义事件，v-on:close="closeModal"
+                   2. 父组件上closeModal方法是：
+                             closeModal() {
+                                this.mdShow = false;
+                            }
+                   3. 如何去触发close事件？
+                      在子组件上Modal:
+                        closeModal(){
+                            this.$emit("close");     // 触发父组件close事件
+                        }
 
 
 */
