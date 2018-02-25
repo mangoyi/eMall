@@ -141,4 +141,31 @@ router.post('/cartDel', function (req, res, next) {
 
 });
 
+// 修改购物车商品数量
+router.post("/cartEdit", function (req, res, next) {
+    var userId = req.cookies.userId,
+        productId = req.body.productId,
+        productNum = req.body.productNum,
+        checked = req.body.checked;
+
+    User.update({"userId": userId, "cartList.productId": productId},{  // 查询对应的用户， 修改cartList子文档中商品id为productId中的商品数量productNum
+       "cartList.$.productNum" : productNum,
+        "cartList.$.checked" : checked,
+    }, function (err, doc) {
+        if(err) {
+            res.json({
+                status: '1',
+                msg: err.message,
+                result: ''
+            });
+        } else {
+            res.json({
+                status: '0',
+                msg: '',
+                result: 'suc'
+            })
+        }
+    });
+});
+
 module.exports = router;
