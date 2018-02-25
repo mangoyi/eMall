@@ -74,19 +74,19 @@ router.post("/logout", function (req, res, next) {   // req 请求  res 响应 n
 
 // 登陆拦截
 router.get("/checkLogin", function (req, res, next) {
-   if (req.cookies.userId) {   // 判断是否存在userId这个cookie
-       res.json({
-           status: '0',
-           msg: '',
-           result: req.cookies.userName || ''
-       })
-   } else {  // 表示当前未登录
-       res.json({
-           status: '1',
-           msg: '当前未登录',
-           result: ''
-       })
-   }
+    if (req.cookies.userId) {   // 判断是否存在userId这个cookie
+        res.json({
+            status: '0',
+            msg: '',
+            result: req.cookies.userName || ''
+        })
+    } else {  // 表示当前未登录
+        res.json({
+            status: '1',
+            msg: '当前未登录',
+            result: ''
+        })
+    }
 });
 
 // 查询当前用户的购物车数据
@@ -101,15 +101,44 @@ router.get('/cartList', function (req, res, next) {
                 result: ''
             });
         } else {
-           if (doc) {
-               res.json({
-                   status: '0',
-                   msg: '',
-                   result: doc.cartList          // 这里便取到了用户对应的购物车列表
-               })
-           }
+            if (doc) {
+                res.json({
+                    status: '0',
+                    msg: '',
+                    result: doc.cartList          // 这里便取到了用户对应的购物车列表
+                })
+            }
         }
     });
+});
+
+// 删除购物车商品
+router.post('/cartDel', function (req, res, next) {
+    var userId = req.cookies.userId, productId = req.body.productId;
+    User.update({
+        userId: userId                           // 查询到这个用户的条件
+    }, {
+        $pull:{                                    // $pull 来删除数组元素，删除cartList数组下面的为productId的数据
+            'cartList': {
+                'productId': productId
+            }
+        }
+    }, function (err, doc) {
+        if(err) {
+            res.json({
+                status: '1',
+                msg: err.message,
+                result: ''
+            })
+        } else {
+            res.json({
+                status: '0',
+                msg: '',
+                result: 'suc'
+            })
+        }
+    });
+
 });
 
 module.exports = router;

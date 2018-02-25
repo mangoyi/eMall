@@ -94,7 +94,7 @@
                                 </div>
                                 <div class="cart-tab-5">
                                     <div class="cart-item-opration">
-                                        <a href="javascript:;" class="item-edit-btn">
+                                        <a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item.productId)">
                                             <svg class="icon icon-del">
                                                 <use xlink:href="#icon-del"></use>
                                             </svg>
@@ -110,9 +110,9 @@
                         <div class="cart-foot-l">
                             <div class="item-all-check">
                                 <a href="javascipt:;" >
-                  <span class="checkbox-btn item-check-btn">
-                      <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
-                  </span>
+                                    <span class="checkbox-btn item-check-btn">
+                                        <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
+                                    </span>
                                     <span>Select all</span>
                                 </a>
                             </div>
@@ -129,6 +129,13 @@
                 </div>
             </div>
         </div>
+        <Modal  :mdShow="modalConfirm" @close="closeModal">
+            <p slot="message">你确认要删除此条商品吗？</p>
+            <div slot="btnGroup">
+                <a href="javascript:void(0);" class="btn btn--m" @click="delCart">确认</a>
+                <a href="javascript:void(0);" class="btn btn--m" @click="modalConfirm = false">关闭</a>
+            </div>
+        </Modal>
         <nav-footer></nav-footer>
     </div>
 </template>
@@ -144,7 +151,9 @@
     export default {
         data() {
             return {
-                cartList: []
+                cartList: [],
+                productId: '',
+                modalConfirm: false
             }
         },
         mounted() {
@@ -163,6 +172,25 @@
                     let res = response.data;
                     this.cartList = res.result;
 
+                });
+            },
+            closeModal() {
+              this.modalConfirm = false;
+            },
+            delCartConfirm(productId) {
+                this.productId = productId;    // 全局保存
+                this.modalConfirm = true;
+            },
+            delCart() {    // 删除购物车
+                axios.post("/users/cartDel", {
+                   productId:this.productId
+                }).then((response) => {
+                    let res = response.data;
+
+                    if(res.status == '0') {      // 删除成功
+                        this.modalConfirm = false;
+                        this.init();             // 删除数据后页面
+                    }
                 });
             }
         }

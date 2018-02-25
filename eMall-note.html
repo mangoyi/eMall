@@ -474,8 +474,30 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
                         }
 
             购物车页面的实现：
+
+            购物车列表的渲染：
                 1. 从用户里获取到购物车的数据列表，渲染在购物车页面。
                        注： 只有登陆之后才可以获取到用户的信息，未登录之前会被拦截，提示是用户未登录
+
+            购物车列表的删除：
+                对于数据的增删改查都是对mongoose中api的操作。
+
+                在config/index.js
+                        // 备注： proxyTable方式的代理是在开发环境中才可以使用的，部署到线上的时候要使用nginx做代理
+                        proxyTable: {
+                            '/goods': {
+                              target: 'http://localhost:3000'
+                            },
+                            '/goods/*': {
+                              target: 'http://localhost:3000'
+                            },
+                            '/users/**': {
+                              target: 'http://localhost:3000'
+                            }
+                        },
+                 配置/users/**    表示可以完成： users下面的三级(多级)的代理。
+
+                 
 
 
 
