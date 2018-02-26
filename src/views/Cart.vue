@@ -109,8 +109,8 @@
                     <div class="cart-foot-inner">
                         <div class="cart-foot-l">
                             <div class="item-all-check">
-                                <a href="javascipt:;" >
-                                    <span class="checkbox-btn item-check-btn">
+                                <a href="javascipt:;" @click="toggleCheckAll">
+                                    <span class="checkbox-btn item-check-btn" v-bind:class="{'check': checkAllFlag}">
                                         <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
                                     </span>
                                     <span>Select all</span>
@@ -119,7 +119,7 @@
                         </div>
                         <div class="cart-foot-r">
                             <div class="item-total">
-
+                                Item total: <span class="total-price">{{totalPrice}}</span>
                             </div>
                             <div class="btn-wrap">
                                 <a class="btn btn--red">Checkout</a>
@@ -157,7 +157,30 @@
             }
         },
         mounted() {
-          this.init();
+            this.init();
+        },
+        computed: {
+            checkAllFlag() {       // 实时属性计算，不能被再次赋值
+                return this.checkedCount == this.cartList.length;  // 如果选择的数量和商品数量相等，说明是已经全选了
+            },
+            checkedCount() {
+                var i = 0;
+                this.cartList.forEach( (item) => {    // 计算选中的商品个数
+                    if(item.checked == '1') {
+                        i++;
+                    }
+                });
+                return i;
+            },
+            totalPrice() {
+                var money = 0;
+                this.cartList.forEach((item) => {
+                   if(item.checked == '1') {
+                       money += parseFloat(item.salePrice) * parseInt(item.productNum);
+                   }
+                });
+                return money;
+            }
         },
         components: {
             NavHeader,
@@ -175,7 +198,7 @@
                 });
             },
             closeModal() {
-              this.modalConfirm = false;
+                this.modalConfirm = false;
             },
             delCartConfirm(productId) {
                 this.productId = productId;    // 全局保存
@@ -183,7 +206,7 @@
             },
             delCart() {    // 删除购物车
                 axios.post("/users/cartDel", {
-                   productId:this.productId
+                    productId:this.productId
                 }).then((response) => {
                     let res = response.data;
 
@@ -213,8 +236,21 @@
                     let res = response.data;
 
                 });
+            },
+            toggleCheckAll() {
+                var flag = !this.checkAllFlag;
+                this.cartList.forEach( (item) => {
+                    item.checked = flag?'1':'0';
+                });
 
-
+                axios.post('/users/editCheckAll', {
+                    checkAll: flag
+                }).then((response) => {
+                    let res = response.data;
+                    if (res.status == '0') {
+                        console.log("update success");
+                    }
+                });
             }
         }
     }

@@ -168,4 +168,53 @@ router.post("/cartEdit", function (req, res, next) {
     });
 });
 
+// 购物车中商品全部选中和全不选中
+router.post("/editCheckAll", function (req, res, next) {
+   var userId = req.cookies.userId,
+       checkAll = req.body.checkAll ? '1': '0';
+
+   // 批量更新子文档里面的数据
+   User.findOne({userId: userId}, function (err, user) {
+
+       if (err) {
+           res.json({
+               status: '1',
+               msg: err.message,
+               result: ''
+           });
+       } else {
+           // 匹配当前用户
+           if (user) {
+
+               // 将子文档遍历然后修改checked属性值
+               user.cartList.forEach( (item) => {
+                  item.checked = checkAll;
+               });
+
+               // 然后保存修改
+               user.save(function (err1, doc) {
+
+                   if (err1) {
+                       res.json({
+                           status: '1',
+                           msg: err1.message,
+                           result: ''
+                       });
+                   } else {
+                       res.json({
+                           status:'0',
+                           msg:'',
+                           result:'suc'
+                       });
+                   }
+
+               });
+           }
+       }
+
+   });
+
+});
+
+
 module.exports = router;

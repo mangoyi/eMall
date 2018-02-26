@@ -506,7 +506,32 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
                    user.js/   => 修改商品数量
 
 
-            
+            购物车商品全选和总金额的计算：
+
+                   在computed属性中定义的变量是不需要在data中定义的,
+
+                    checkAllFlag() {
+                        return this.checkedCount == this.cartList.length;
+                    },
+                    checkedCount() {
+                        var i = 0;
+                        this.cartList.forEach( (item) => {
+                            if(item.checked == '1') {
+                                i++;
+                            }
+                        });
+                        return i;
+                    },
+
+
+               虽然computed中写成方法，但是要写成属性的形式。因为是计算属性。  ====>   总金额的计算
+
+               在实现商品全选中主要的是使用computed计算属性来控制checkAllFlag的值，从而判断是否全选。因为数据库中并没有存checkAllFlag这个字段。
+               所以是在前端通过去遍历cartList中选中商品的个数和cartList的length属性是否相同，来确认是否全选。
+
+               
+
+
 
 
 
