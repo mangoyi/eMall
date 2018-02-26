@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import VueLazyLoad from 'vue-lazyload'
 import inifiteScroll from 'vue-infinite-scroll'
+import {currency} from "./util/currency"
 
 Vue.config.productionTip = false
 
@@ -13,6 +14,8 @@ Vue.use(VueLazyLoad, {
 })
 
 Vue.use(inifiteScroll)
+
+Vue.filter("currency", currency)                // 全局过滤器
 
 /* eslint-disable no-new */
 new Vue({

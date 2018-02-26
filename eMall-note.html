@@ -524,12 +524,40 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
                     },
 
 
-               虽然computed中写成方法，但是要写成属性的形式。因为是计算属性。  ====>   总金额的计算
+                   虽然computed中写成方法，但是要写成属性的形式。因为是计算属性。  ====>   总金额的计算
 
-               在实现商品全选中主要的是使用computed计算属性来控制checkAllFlag的值，从而判断是否全选。因为数据库中并没有存checkAllFlag这个字段。
-               所以是在前端通过去遍历cartList中选中商品的个数和cartList的length属性是否相同，来确认是否全选。
+                   在实现商品全选中主要的是使用computed计算属性来控制checkAllFlag的值，从而判断是否全选。因为数据库中并没有存checkAllFlag这个字段。
+                   所以是在前端通过去遍历cartList中选中商品的个数和cartList的length属性是否相同，来确认是否全选。
 
-               
+            金额格式化：
+                在yyx的github中提供了一种金额格式化的插件，链接地址：https://github.com/vuejs/vuex/blob/dev/examples/shopping-cart/currency.js
+
+                项目中的通用工具，新建src/util/currency.js  作为通用文件。便可以直接在Cart.vue中直接import导入
+
+                然后实现过滤器的功能： 全局过滤器/局部过滤器
+                       全局过滤器： 在main.js中定义，在整个过程所有组件都是可以使用的
+
+                            import {currency} from "./util/currency"
+
+                            注： 因为.util/currency 是一个具名函数导出的，所以在接收的时候要采用{currency}对象的形式来接收
+                                如果.util.currency 是export.default = 的形式来导出的，那么直接 currency 来作为函数名接收就可以了
+
+                            Vue.filter("currency", currency)                // 全局过滤器
+
+                            在前端中的使用方式：<span class="total-price">{{totalPrice | currency('$')}}</span>
+
+
+                        局部过滤器： 在cart.vue这样的组件中来定义，仅仅使用于当前的组件
+                            filters: {
+                                currency: currency
+                            },
+
+                            定义一个局部过滤器，一定是要加filters这个s的，因为过滤器里面是可能会定义很多个过滤器，比如日期格式化等等
+
+                            在前端中的使用方式：<span class="total-price">{{totalPrice | currency('$')}}</span>
+
+
+
 
 
 

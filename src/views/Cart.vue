@@ -76,7 +76,7 @@
                                     </div>
                                 </div>
                                 <div class="cart-tab-2">
-                                    <div class="item-price">{{item.salePrice}}</div>
+                                    <div class="item-price">{{item.salePrice | currency('$')}}</div>
                                 </div>
                                 <div class="cart-tab-3">
                                     <div class="item-quantity">
@@ -90,7 +90,7 @@
                                     </div>
                                 </div>
                                 <div class="cart-tab-4">
-                                    <div class="item-price-total">{{item.productNum * item.salePrice}}</div>
+                                    <div class="item-price-total">{{ (item.productNum * item.salePrice) | currency('$')}}</div>
                                 </div>
                                 <div class="cart-tab-5">
                                     <div class="cart-item-opration">
@@ -119,7 +119,7 @@
                         </div>
                         <div class="cart-foot-r">
                             <div class="item-total">
-                                Item total: <span class="total-price">{{totalPrice}}</span>
+                                Item total: <span class="total-price">{{totalPrice | currency('$')}}</span>
                             </div>
                             <div class="btn-wrap">
                                 <a class="btn btn--red">Checkout</a>
@@ -147,6 +147,7 @@
     import NavBread from './../components/NavBread'
     import Modal from './../components/Modal'
     import axios from 'axios'
+    // import {currency} from "./../util/currency"
 
     export default {
         data() {
@@ -159,6 +160,9 @@
         mounted() {
             this.init();
         },
+        // filters: {
+        //     currency: currency
+        // },
         computed: {
             checkAllFlag() {       // 实时属性计算，不能被再次赋值
                 return this.checkedCount == this.cartList.length;  // 如果选择的数量和商品数量相等，说明是已经全选了
