@@ -122,7 +122,7 @@
                                 Item total: <span class="total-price">{{totalPrice | currency('$')}}</span>
                             </div>
                             <div class="btn-wrap">
-                                <a class="btn btn--red">Checkout</a>
+                                <a class="btn btn--red" v-bind:class="{'btn--dis': checkedCount == 0}" @click="checkOut">Checkout</a>
                             </div>
                         </div>
                     </div>
@@ -255,6 +255,13 @@
                         console.log("update success");
                     }
                 });
+            },
+            checkOut() {
+                if(this.checkedCount > 0) {   // 表明已经选择了当前购物车的商品
+                    this.$router.push({
+                        path: "/address"    // 指定跳转到address页面
+                    });
+                }
             }
         }
     }

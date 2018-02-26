@@ -216,5 +216,27 @@ router.post("/editCheckAll", function (req, res, next) {
 
 });
 
+// 查询用户地址
+router.get('/addressList', function (req, res, next) {
+
+    var userId = req.cookies.userId;
+    User.findOne({userId: userId}, function (err, doc) {
+       if (err) {  // 说明没找到
+           res.json({
+               status: '1',
+               msg: err.message,
+               result: ''
+           });
+       } else {
+           res.json({
+               status: '0',
+               msg: '',
+               result: doc.addressList        // 直接将用户的地址列表返回给前端
+           })
+       }
+    });
+
+
+});
 
 module.exports = router;
