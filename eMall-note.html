@@ -595,7 +595,34 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
 
                 12-4 地址删除功能实现：
 
+                    点击删除，弹出一个modal框，点击确定，然后删除modal框。
 
+                    使用mongoose中的update这个api来更新数据，将匹配的addressId删除：
+                    User.update({
+                       userId: userId
+                   }, {
+                       $pull: {
+                           'addressList': {
+                               'addressId': addressId
+                           }
+                       }
+                   }, function (err, doc) {
+
+                       if (err) {
+                           res.json({
+                               status: '1',
+                               msg: err.message,
+                               result: ''
+                           });
+                       } else {
+                           res.json({
+                               status: '0',        // 地址删除成功
+                               msg: '',
+                               result: ''
+                           });
+                       }
+
+                   });
 
 
 

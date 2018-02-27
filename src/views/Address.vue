@@ -67,7 +67,7 @@
                                         <dd class="tel">{{item.tel}}</dd>
                                     </dl>
                                     <div class="addr-opration addr-del">
-                                        <a href="javascript:;" class="addr-del-btn">
+                                        <a href="javascript:;" class="addr-del-btn" @click="delAddressConfirm(item.addressId)">
                                             <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                                         </a>
                                     </div>
@@ -124,6 +124,13 @@
                 </div>
             </div>
         </div>
+        <modal :mdShow="isMdShow" @close="closeModal">
+            <p slot="message">您是否确认删除此地址？</p>
+            <div slot="btnGroup">
+                <a href="javascript:void(0);" class="btn btn--m" @click="delAddress">确认</a>
+                <a href="javascript:void(0);" class="btn btn--m" @click="isMdShow=false">取消</a>
+            </div>
+        </modal>
         <nav-footer></nav-footer>
     </div>
 </template>
@@ -140,7 +147,9 @@
             return {
                 limit: 3,
                 checkIndex: 0,        // 表示默认选中了下标为0的地址
-                addressList: []        // data必须是一个函数 data必须通过返回一个对象的形式，组件中必须是函数内部返回一个局部变量(返回的这个对象)
+                addressList: [],        // data必须是一个函数 data必须通过返回一个对象的形式，组件中必须是函数内部返回一个局部变量(返回的这个对象)
+                isMdShow: false,
+                addressId: ''
             }
         },
         mounted() {
@@ -180,6 +189,25 @@
                         console.log("setDefault success");
                         this.init();
                     }
+                });
+            },
+            closeModal() {
+                this.isMdShow = false;              // 关闭弹框
+            },
+            delAddressConfirm(addressId) {
+                this.isMdShow = true;               // 打开弹框
+                this.addressId = addressId;         // 相当于将地址全局保存
+            },
+            delAddress() {
+                axios.post("/users/delAddress", {
+                    addressId: this.addressId
+                }).then( (response) => {
+                   let res = response.data;
+                   if (res.status == '0') {         // 删除成功
+                       console.log("del success");
+                       this.isMdShow = false;
+                       this.init();
+                   }
                 });
             }
         }
