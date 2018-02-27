@@ -408,6 +408,61 @@ router.post("/payMent", function(req, res, next) {
             });
         }
     });
+});
+
+// 订单Id查询订单信息
+router.get("/orderDetail", function(req, res, next) {
+
+    var userId = req.cookies.userId, orderId = req.param("orderId");
+
+    User.findOne({userId: userId}, function (err, userInfo) {
+       if(err) {
+           res.json({      // 1. res.json  是输出json文档   2. res.end  是直接结束
+               status: '1',
+               msg: err.message,
+               result: ''
+           });
+       } else {
+
+           var orderList = userInfo.orderList;
+           if(orderList.length > 0) {
+               var orderTotal = 0;
+               orderList.forEach( (item) => {
+
+                   if(item.orderId == orderId) {
+                        orderTotal = item.orderTotal;
+                   }
+
+               });
+
+                if(orderTotal > 0 ) {     // 严谨性 订单金额>0
+                    res.json({
+                        status: '0',
+                        msg: '',
+                        result: {
+                            orderId: orderId,
+                            orderTotal: orderTotal
+                        }
+                    });
+                } else {
+                    res.json({
+                        status: '13331',
+                        msg: '无此订单',
+                        result: ''
+                    });
+                }
+
+           }else {
+               // 没有订单
+               res.json({
+                   status: '13332',
+                   msg: '当前用户无订单',
+                   result: ''
+               });
+           }
+
+       }
+    });
 
 });
 
