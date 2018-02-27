@@ -60,7 +60,7 @@
                     <div class="addr-list-wrap">
                         <div class="addr-list">
                             <ul>
-                                <li v-for="item in addressList">
+                                <li v-for="(item, index) in addressListFilter" v-bind:class="{'check': checkIndex == index}" @click="checkIndex = index">
                                     <dl>
                                         <dt>{{item.userName}}</dt>
                                         <dd class="address">{{item.streetName}}</dd>
@@ -88,7 +88,7 @@
                         </div>
 
                         <div class="shipping-addr-more">
-                            <a class="addr-more-btn up-down-btn" href="javascript:;">
+                            <a class="addr-more-btn up-down-btn" href="javascript:;" @click="expand" v-bind:class="{'open': limit > 3}">
                                 more
                                 <i class="i-up-down">
                                     <i class="i-up-down-l"></i>
@@ -138,11 +138,18 @@
     export default {
         data() {
             return {
+                limit: 3,
+                checkIndex: 0,        // 表示默认选中了下标为0的地址
                 addressList: []        // data必须是一个函数 data必须通过返回一个对象的形式，组件中必须是函数内部返回一个局部变量(返回的这个对象)
             }
         },
         mounted() {
           this.init();
+        },
+        computed: {
+          addressListFilter() {
+            return this.addressList.slice(0, this.limit);   // 这里返回的是全新的数组，不会污染到addressList数组，所以addressList是不会发生变化的
+          }
         },
         components: {
             NavHeader,
@@ -156,6 +163,13 @@
                     let res = response.data;
                     this.addressList = res.result;
                 });
+            },
+            expand() {
+                if(this.limit == 3) {
+                    this.limit = this.addressList.length;    // 如果只是显示的3个数据，那么将this.limit的值赋为数组的总长度
+                } else {
+                    this.limit = 3;                           // 表示地址已经全部展开了，再点击的时候应该将数组缩短为3个。
+                }
             }
         }
     }

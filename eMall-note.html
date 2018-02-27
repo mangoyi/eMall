@@ -565,6 +565,27 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
 
                 12-2 地址切换和展开功能实现：
 
+                    需求： 默认只是显示三个地址，然后点击more展开所有用户地址；
+
+                          因为默认只显示三个地址，所以只能取addressList中的三个数据。
+
+                          设置addressListFilter为计算属性，因为获取的肯定是全部的数据，所以要动态的去判断当前要显示的个数。
+                          computed: {
+                              addressListFilter() {
+                                return this.addressList.slice(0, this.limit);
+                              }
+                          },
+
+                          <li v-for="item in addressListFilter">
+
+                         这样返回的就是limit个地址。
+
+                     需求： 每个地址之间的切换；
+
+                        通过判断index==checkIndex  点击的下标和checkIndex的值是否相同，相同的时候就是选中了这个地址。
+
+
+
                 12-3 地址设置默认功能实现：
 
                 12-4 地址删除功能实现：
