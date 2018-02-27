@@ -1,3 +1,6 @@
+// 加入util工具类,日期格式化工具
+require('./../util/util');
+
 var express = require('express');
 var router = express.Router();
 
@@ -325,6 +328,86 @@ router.post("/delAddress", function (req, res, next) {
        }
 
    });
+
+});
+
+// 生成支付订单
+router.post("/payMent", function(req, res, next) {
+
+    var userId = req.cookies.userId,
+        addressId = req.body.addressId,
+        orderTotal = req.body.orderTotal;
+
+    User.findOne({userId: userId}, function (err, doc) {
+
+        if(err) {
+            res.json({
+                status:'1',
+                msg: err.message,
+                result: ''
+            });
+        } else {           // 获得用户信息
+
+            // 获取选中的地址信息
+            var address = '',
+                goodsList = [];
+            doc.addressList.forEach( (item) => {
+                if(addressId == item.addressId) {       // 说明用户使用的是item.addressId 这个地址
+                    address = item;
+                }
+            });
+
+            // 获取购物车中选中的商品
+            doc.cartList.filter((item) => {
+               if (item.checked == '1') {
+                   goodsList.push(item);
+               }
+            });
+
+            // 日期格式化
+            var r1 = Math.floor(Math.random()*10);
+            var r2 = Math.floor(Math.random()*10);
+
+            var sysDate = new Date().Format('yyyyMMddhhmmss');    // 年月日时分秒, 系统时间
+            var createDate = new Date().Format('yyyy-MM-dd hh:mm:ss');  // 订单创建时间
+
+            var platform = '866';  // 平台码
+
+            var orderId = platform + r1 + sysDate + r2;   //   创建了订单Id
+
+            // 创建订单
+            var order = {
+                orderId: orderId,
+                orderTotal: orderTotal,        // 前端传
+                addressInfo: address,          // 前端传
+                goodsList: goodsList,
+                orderStatus: '1',
+                createDate: createDate
+            };
+
+            doc.orderList.push(order);      // 把上面创建的数据push到订单列表的数组中
+
+            doc.save(function (err1, doc) {
+
+                if (err1) {
+                    res.json({
+                        status: '1',
+                        msg: err1.message,
+                        result: ''
+                    });
+                } else {
+                    res.json({
+                        status: '0',
+                        msg: '',
+                        result: {
+                            orderId: order.orderId,
+                            orderTotal: orderTotal
+                        }
+                    });
+                }
+            });
+        }
+    });
 
 });
 

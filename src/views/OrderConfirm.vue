@@ -120,10 +120,10 @@
 
                 <div class="order-foot-wrap">
                     <div class="prev-btn-wrap">
-                        <button class="btn btn--m">Previous</button>
+                        <router-link class="btn btn--m" to="/address">Previous</router-link>
                     </div>
                     <div class="next-btn-wrap">
-                        <button class="btn btn--m btn--red">Proceed to payment</button>
+                        <button class="btn btn--m btn--red" @click="payMent">Proceed to payment</button>
                     </div>
                 </div>
             </div>
@@ -165,12 +165,29 @@
                     this.cartList = res.result;
 
                     this.cartList.forEach((item) => {
-                       if(item.checked == '1') {          // 勾选的商品
-                           this.subTotal += item.salePrice*item.productNum;
-                       }
+                        if(item.checked == '1') {          // 勾选的商品
+                            this.subTotal += item.salePrice*item.productNum;
+                        }
                     });
 
                     this.orderTotal = this.subTotal + this.shipping - this.discount + this.tax;
+                });
+            },
+            payMent() {
+                var addressId = this.$route.query.addressId;
+                axios.post("/users/payMent", {
+                    addressId: addressId,
+                    orderTotal: this.orderTotal
+                }).then( (response) => {
+                    let res = response.data;
+
+                    if (res.status == '0') {  // 订单生成成功
+                        // console.log('order created success');
+                        this.$router.push({
+                            path: '/orderSuccess?orderId='+res.result.orderId
+                        });     // 直接路由跳转
+                    }
+
                 });
             }
         }
