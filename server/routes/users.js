@@ -236,6 +236,62 @@ router.get('/addressList', function (req, res, next) {
        }
     });
 
+});
+
+// 选择默认地址
+router.post("/setDefault", function (req, res, next) {
+
+    var userId = req.cookies.userId,
+        addressId = req.body.addressId;
+
+    if (!addressId) {          // 如果addressId没有获取到
+        res.json({
+            status: '1000005',
+            msg: "addressId is null",
+            result: ''
+        });
+    } else {
+        User.findOne({userId: userId}, function(err, doc) {
+
+            if (err) {
+                res.json({
+                    status: '1',
+                    msg: err.message,
+                    result: ''
+                });
+            } else {
+                var addressList = doc.addressList;    // 获取到地址列表
+
+                addressList.forEach((item) => {
+                    if (item.addressId == addressId) {
+                        item.isDefault = true;                              // 只设置当前为默认地址
+                    } else {
+                        item.isDefault = false;                             // 其他全部不是默认地址
+                    }
+                });
+            }
+
+            doc.save(function (err1, doc1) {
+
+                if (err1) {
+                    res.json({
+                        status: '1',
+                        msg: err1.message,
+                        result: ''
+                    });
+                } else {
+                    res.json({
+                        status: '0',          // 默认地址设置成功
+                        msg: '',
+                        result: ''
+                    });
+                }
+
+            });
+
+        });
+    }
+
 
 });
 

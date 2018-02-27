@@ -71,10 +71,10 @@
                                             <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                                         </a>
                                     </div>
-                                    <div class="addr-opration addr-set-default">
+                                    <div class="addr-opration addr-set-default" v-if="!item.isDefault" @click="setDefault(item.addressId)">
                                         <a href="javascript:;" class="addr-set-default-btn"><i>Set default</i></a>
                                     </div>
-                                    <div class="addr-opration addr-default">Default address</div>
+                                    <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
                                 </li>
                                 <li class="addr-new">
                                     <div class="add-new-inner">
@@ -170,6 +170,17 @@
                 } else {
                     this.limit = 3;                           // 表示地址已经全部展开了，再点击的时候应该将数组缩短为3个。
                 }
+            },
+            setDefault(addressId) {
+                axios.post("/users/setDefault", {
+                    addressId: addressId
+                }).then((response) => {
+                    let res = response.data;
+                    if( res.status == '0') {         // 表示默认地址设置成功
+                        console.log("setDefault success");
+                        this.init();
+                    }
+                });
             }
         }
     }
