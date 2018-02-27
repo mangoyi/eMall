@@ -60,7 +60,7 @@
                     <div class="addr-list-wrap">
                         <div class="addr-list">
                             <ul>
-                                <li v-for="(item, index) in addressListFilter" v-bind:class="{'check': checkIndex == index}" @click="checkIndex = index">
+                                <li v-for="(item, index) in addressListFilter" v-bind:class="{'check': checkIndex == index}" @click="checkIndex = index; selectedAddrId=item.addressId">
                                     <dl>
                                         <dt>{{item.userName}}</dt>
                                         <dd class="address">{{item.streetName}}</dd>
@@ -119,7 +119,7 @@
                         </div>
                     </div>
                     <div class="next-btn-wrap">
-                        <a class="btn btn--m btn--red">Next</a>
+                        <router-link class="btn btn--m btn--red" v-bind:to="{path: 'orderConfirm', query: {'addressId': selectedAddrId}}">Next</router-link>
                     </div>
                 </div>
             </div>
@@ -149,7 +149,8 @@
                 checkIndex: 0,        // 表示默认选中了下标为0的地址
                 addressList: [],        // data必须是一个函数 data必须通过返回一个对象的形式，组件中必须是函数内部返回一个局部变量(返回的这个对象)
                 isMdShow: false,
-                addressId: ''
+                addressId: '',
+                selectedAddrId: ''    // 选中的地址id
             }
         },
         mounted() {
