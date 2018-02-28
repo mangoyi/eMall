@@ -650,6 +650,136 @@ new Vue({      // 也可以通过$mount()的方式挂载到区域
                 根据orderId来获得订单成功的页面。
 
 
+                git commit -m "order success order-detail"  这个版本中已经完成了vue项目中的功能。
+
+
+            vuex：
+
+                vuex对于复杂的程序起着非常重要的作用
+
+                什么是vuex？
+
+                    Vuex是一个专为vue.js应用程序开发的状态管理模式
+
+                        => 只试用vue.js
+                        => 状态管理： 在vue中每个组件中的data里面的变量都称之为状态
+
+                        为了去更好的管理组件中的状态，将组件中的变量抽出来放在vuex中，通过vuex来集中的管理这些状态。
+
+                为什么要使用Vuex?
+
+                    当构建一个中大型的单页面应用程序时，Vuex可以更好的帮助我们在组件外部统一管理状态。
+
+                Vuex的核心概念：
+
+                    1.State -- 必须掌握
+                        通过状态来管理Dom，来操作Dom
+
+                        State是唯一的数据源。所有通过组件抽取出来的变量都要存放在State中进行管理。
+
+                        单一状态树。
+
+                        例子：
+                        const Counter = {
+                            template: `<div>{{ count }}</div>`
+                            computed: {                                      // 计算属性中的属性必须是一个函数
+                                count() {
+                                    return this.$store.state.count           // this   表示vue的实例  // this.$store 表示vuex的对象 // this.$store.state 是vuex中定义的属性，任何的状态都是定义在state中，
+                                 }
+                            }
+                        }
+
+
+                    2.Getters
+
+                        通过Getters可以派生出一些新的状态
+
+                        const store = new Vuex.Store({
+                            state: {                               //  todos假设是我们在每一个页面都要使用到的数组，
+                                todos: [
+                                    {id: 1, text: '...', done: true},
+                                    {id: 2, text: '...', done: true}
+                                ]
+                            },
+                            getters: {
+                                doneTodos: state => {
+                                    return state.todos.filter(todo =>  todo.done)
+                                        // 获取到todo.done值为true的数据，相当于将值为false的数据过滤，这样基于todos，通过getters派生出了新的状态，
+                                }
+                            }
+
+                        })
+
+                        这种方式定义vuex实例。
+
+
+                    3.Mutations -- 必须掌握   唯一可以提交和改变状态
+
+                        更改Vuex的store中的状态的唯一方法是提交mutations
+
+                        const store = new Vuex.Store({
+                            state: {                        // 定义了一个state属性
+                                count: 1
+                            },
+                            mutations: {
+                                increment(state) {
+                                    // 变更状态
+                                    state.count++           // vuex中状态的值只能通过mutations来提交，并且是唯一的方法！！！
+                                }
+                            }
+
+                        })
+
+                        store.commit("increment")
+
+
+                    4.Actions
+
+                        Actions提交的是mutation，而不是直接变更状态
+                        Actions可以包含任意异步操作
+
+                        const store = new Vuex.Store({                           // new一个vuex实例
+                            state: {
+                                count:0
+                            },
+                            mutations: {                                        // 唯一用来修改state中的值的方法， 这里是必须同步的，不能包含任何异步代码
+                                increment(state) {
+                                    state.count++
+                                }
+                            },
+                            actions: {                                          // context可以全局调用commit方法，来提交increment方法，提交完成之后就会嗲用mutations下面的increment方法
+                                increment(context) {
+                                    context.commit('increment')
+                                }
+                            }
+                        })
+
+
+                    5.Modules
+
+                        面对复杂的应用程序时，当管理的状态比较多时，需要将Vuex的store对象分割成模块(modules)
+
+                        const moduleA = {
+                            state: {},
+                            mutations: {},
+                            actions: {},
+                            getters:{}
+                        }
+
+                        const moduleB = {
+                            state: {},
+                            mutations: {},
+                            actions: {},
+                            getters:{}
+                        }
+
+                        const store = new Vuex.Store({          // 固定格式的写法
+                            modules: {
+                                a: moduleA,
+                                b: moduleB
+                            }
+                        })
+
 
 
 
