@@ -149,7 +149,7 @@
             getCartCount() {
                 axios.get("/users/getCartCount").then( (response) => {
                     let res = response.data;
-                    this.$store.commit("updateCartCount", res.result);
+                    this.$store.commit("initCartCount", res.result);
                 });
             }
         }

@@ -204,6 +204,9 @@
                     let res = response.data;
                     if (res.status =='0') {
                         this.mdShowCart = true;
+
+                        this.$store.commit("updateCartCount", 1);
+
                     } else {
                         this.mdShow = true;
                     }

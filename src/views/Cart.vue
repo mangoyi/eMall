@@ -217,6 +217,8 @@
                     if(res.status == '0') {      // 删除成功
                         this.modalConfirm = false;
                         this.init();             // 删除数据后页面
+                        console.log(res.result);  // 只是返回了商品的suc删除成功信息
+                        this.$store.commit("updateCartCount", -1);
                     }
                 });
             },
@@ -238,7 +240,10 @@
                     checked: item.checked
                 }).then((response) => {
                     let res = response.data;
-
+                    
+                    if(res.status=="0"){
+                        this.$store.commit("updateCartCount",flag=="add"?1:-1);
+                    }
                 });
             },
             toggleCheckAll() {
