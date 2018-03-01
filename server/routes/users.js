@@ -92,6 +92,37 @@ router.get("/checkLogin", function (req, res, next) {
     }
 });
 
+// 查询购物车数量
+router.get("/getCartCount", function (req, res, next) {
+
+    if(req.cookies && req.cookies.userId) {   // 当两个条件都满足的时候，然后再去获取ID
+        var userId = req.cookies.userId;
+
+        User.findOne({userId: userId}, function (err, doc) {
+            if (err) {
+                res.json({
+                    status: '1',
+                    msg: err.message,
+                    result: ''
+                });
+            } else {
+
+                var cartList = doc.cartList;   // doc是当前用户的对象,cartList是doc下面的一个用户列表
+                let cartCount = 0;
+                cartList.map( (item) => {
+                    cartCount += parseInt(item.productNum);
+                });
+                res.json({
+                    status: '0',
+                    msg: '',
+                    result: cartCount           // 返回商品数量
+                })
+            }
+        })
+    }
+
+});
+
 // 查询当前用户的购物车数据
 router.get('/cartList', function (req, res, next) {
 

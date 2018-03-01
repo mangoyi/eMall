@@ -21,21 +21,25 @@
             </defs>
         </svg>
         <div class="navbar">
-            <div class="logo">
+            <div class="navbar-left-container">
                 <a href="/">
-                    <img src="/static/logo.png">
+                    <img class="navbar-brand-logo" src="/static/logo.png">
                 </a>
             </div>
-            <div class="nav-cart">
-                <span v-text="nickName" v-if="nickName"></span>
-                <a href="javascript:void(0)" @click="loginModalFlag=true" v-if="!nickName">Login</a>
-                <a href="javascript:void(0)" @click="logOut" v-if="nickName">Log Out</a>
-
-                <a href="javascript:void(0)">
-                    <svg class="navbar-cart-logo">
-                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
-                    </svg>
-                </a>
+            <div class="navbar-right-container" style="display: flex;">
+                <div class="navbar-menu-container">
+                    <span class="navbar-link" v-text="nickName" v-if="nickName"></span>
+                    <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName">Login</a>
+                    <a href="javascript:void(0)" class="navbar-link" @click="logOut" v-if="nickName">Log Out</a>
+                    <div class="navbar-cart-container">
+                        <span class="navbar-cart-count" v-if="cartCount > 0">{{cartCount}}</span>
+                        <a class="navbar-link navbar-cart-link" href="/#/cart">
+                            <svg class="navbar-cart-logo">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show': loginModalFlag}">
@@ -80,8 +84,15 @@
                 userName: '',
                 userPwd:'',
                 errorTip: false,
-                loginModalFlag: false,
-                nickName: ''
+                loginModalFlag: false
+            }
+        },
+        computed: {
+            nickName() {
+                return this.$store.state.nickName
+            },
+            cartCount() {
+                return this.$store.state.cartCount
             }
         },
         mounted() {                    // 生命周期的初始化函数
@@ -92,7 +103,13 @@
                 axios.get("/users/checkLogin").then((response) => {
                     let res = response.data;
                     if(res.status == '0') { // 已经登陆
-                        this.nickName = res.result;
+                        // this.nickName = res.result;
+                        this.$store.commit("updateUserInfo", res.result);
+                        this.loginModalFlag = false;
+                    } else {
+                        // if(this.$route.path != "/goods") {
+                        //     this.$router.push('/goods');
+                        // }
                     }
                 });
             },
@@ -111,8 +128,9 @@
                     if (res.status == '0') {  // 账号密码全部正确的时候
                         this.errorTip = false;
                         this.loginModalFlag = false;
+                        this.$store.commit("updateUserInfo", res.result.userName);
+                        this.getCartCount();
 
-                        this.nickName = res.result.userName;
                     } else {
                         this.errorTip = true;
                     }
@@ -123,9 +141,16 @@
                 axios.post("/users/logout").then((response) => {
                     let res = response.data;
                     if (res.status == '0') { // 表示 退出成功
-                         this.nickName = '';
+                        this.$store.commit("updateUserInfo", "");
                     }
                 })
+            },
+
+            getCartCount() {
+                axios.get("/users/getCartCount").then( (response) => {
+                    let res = response.data;
+                    this.$store.commit("updateCartCount", res.result);
+                });
             }
         }
     }
